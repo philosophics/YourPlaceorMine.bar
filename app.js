@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Pricing Estimator Logic ---
+  // --- Pricing Estimator Logic (Bracketed Range & 100-Guest Solo Capacity) ---
   const guestSlider = document.getElementById('guestSlider');
   const durationSlider = document.getElementById('durationSlider');
   const guestCountVal = document.getElementById('guestCountVal');
@@ -64,27 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryAddons = document.getElementById('summaryAddons');
   const applyToFormBtn = document.getElementById('applyToForm');
 
-  // Realistic Dry-Hire Package & Consumable Rates
-  // Calibrated so 50 guests @ 4 hours = $550 (Classic), $850 (Craft), $1,350 (Grand)
-  const TIER_CONFIG = {
-    classic: {
-      name: 'The Classic Pour',
-      baseFee: 350,
-      perGuest: 4,      // Mixers, highball garnishes, ice, cups, napkins
-      baseStaff: 1
-    },
-    craft: {
-      name: 'The Craft Signature',
-      baseFee: 550,
-      perGuest: 6,      // Craft syrups, fresh citrus cordials, aromatics, craft ice
-      baseStaff: 2
-    },
-    grand: {
-      name: 'The Grand Lounge',
-      baseFee: 950,
-      perGuest: 8,      // 3 signature syrups, mocktail infusions, spa waters, custom menus
-      baseStaff: 3      // 2 bartenders + 1 barback
-    }
+  const PUBLIC_TIERS = {
+    classic: { name: 'The Classic Pour', base: 350, perGuest: 4.0 },
+    craft: { name: 'The Craft Signature', base: 520, perGuest: 5.5 },
+    grand: { name: 'The Grand Lounge', base: 850, perGuest: 7.5 }
   };
 
   function updateEstimator() {
@@ -100,81 +83,57 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) card.classList.toggle('active', radio.checked);
     });
 
-    const tier = TIER_CONFIG[selectedTier];
+    const tier = PUBLIC_TIERS[selectedTier];
 
-    // 1. Staffing allocation based on tier and guest count
-    let bartenders = tier.baseStaff;
-    let staffLabel = `${bartenders} Certified Bartender${bartenders > 1 ? 's' : ''}`;
+    // Staffing calculation: Solo mixologist up to 100 guests
+    let staffCount = 1;
+    let staffLabel = '1 Lead Mixologist (Solo Service)';
 
-    if (selectedTier === 'classic') {
-      if (guests <= 65) {
-        bartenders = 1;
-        staffLabel = '1 Certified Bartender';
-      } else if (guests <= 130) {
-        bartenders = 2;
-        staffLabel = '2 Certified Bartenders';
-      } else {
-        bartenders = 3;
-        staffLabel = '3 Staff (2 Bartenders + Barback)';
-      }
-    } else if (selectedTier === 'craft') {
-      if (guests <= 110) {
-        bartenders = 2;
-        staffLabel = '2 Certified Bartenders';
-      } else if (guests <= 180) {
-        bartenders = 3;
-        staffLabel = '3 Staff (2 Bartenders + Barback)';
-      } else {
-        bartenders = 4;
-        staffLabel = '4 Staff (3 Bartenders + Barback)';
-      }
-    } else { // grand
-      if (guests <= 130) {
-        bartenders = 3;
-        staffLabel = '3 Staff (2 Bartenders + Barback)';
-      } else {
-        bartenders = 4;
-        staffLabel = '4 Staff (3 Bartenders + Barback)';
-      }
+    if (guests > 175) {
+      staffCount = 3;
+      staffLabel = '3 Staff (2 Certified Bartenders + Barback)';
+    } else if (guests > 100) {
+      staffCount = 2;
+      staffLabel = '2 Certified Bartenders';
     }
 
-    // Additional staffing fee if guest count exceeds base package staff coverage
-    const extraStaffCount = Math.max(0, bartenders - tier.baseStaff);
-    const extraStaffFee = extraStaffCount * 180;
+    // Additional staffing fee when exceeding solo capacity
+    const extraStaffFee = Math.max(0, staffCount - 1) * 160;
 
-    // 2. Per-Guest Consumables / Ingredients Fee
+    // Per-guest consumables (syrups, fresh citrus, aromatics, garnishes, ice)
     const guestFee = guests * tier.perGuest;
 
-    // 3. Hourly Service Duration Adjustment (4 hours standard)
-    let hourlyAdjustment = 0;
+    // Hourly service duration scaling (4 hours standard)
+    let hrFee = 0;
     let hoursLabel = '$0 (Standard 4h)';
 
-    if (hours === 4) {
-      hourlyAdjustment = 0;
-      hoursLabel = '$0 (Standard 4h)';
-    } else if (hours > 4) {
+    if (hours > 4) {
       const extraH = hours - 4;
-      hourlyAdjustment = extraH * (bartenders * 65);
-      hoursLabel = `+$${hourlyAdjustment} (+${extraH}h @ ${bartenders} staff)`;
-    } else {
+      hrFee = extraH * (staffCount * 60);
+      hoursLabel = `+$${hrFee} (+${extraH}h @ ${staffCount} staff)`;
+    } else if (hours < 4) {
       const lessH = 4 - hours;
-      hourlyAdjustment = -(lessH * (bartenders * 40));
-      hoursLabel = `-$${Math.abs(hourlyAdjustment)} (-${lessH}h reduced duration)`;
+      hrFee = -(lessH * (staffCount * 35));
+      hoursLabel = `-$${Math.abs(hrFee)} (-${lessH}h reduced duration)`;
     }
 
-    // 4. Add-on Enhancements
+    // Add-on Enhancements
     let addonSum = 0;
     addonCheckboxes.forEach(cb => {
       if (cb.checked) addonSum += parseInt(cb.value, 10);
     });
 
-    // 5. Total Investment Calculation
-    const total = tier.baseFee + guestFee + extraStaffFee + hourlyAdjustment + addonSum;
+    const baseline = tier.base + guestFee + extraStaffFee + hrFee + addonSum;
+
+    // Bracketed pricing: Baseline to +15% buffer rounded to nearest $10
+    const lowEst = Math.round((baseline * 0.95) / 10) * 10;
+    const highEst = Math.round((baseline * 1.25) / 10) * 10;
 
     // UI Updates
     guestCountVal.textContent = `${guests} Guests`;
     durationVal.textContent = `${hours} Hours`;
-    totalEstimate.textContent = total.toLocaleString();
+    totalEstimate.textContent = `$${lowEst.toLocaleString()} – $${highEst.toLocaleString()}`;
+
     if (summaryStaff) summaryStaff.textContent = staffLabel;
     if (summaryTier) summaryTier.textContent = tier.name;
     if (summaryHours) summaryHours.textContent = hoursLabel;
@@ -194,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyToFormBtn.addEventListener('click', () => {
       const guests = guestSlider.value;
       const hours = durationSlider.value;
+      const rangeText = totalEstimate.textContent;
       let selectedTier = 'craft';
       tierRadios.forEach(r => { if (r.checked) selectedTier = r.value; });
 
@@ -210,13 +170,34 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (eventNotes) {
-        eventNotes.value = `Applied from estimator:\n- Selected Package: ${TIER_CONFIG[selectedTier].name}\n- Planned Service Duration: ${hours} Hours\n- Estimated Guest Count: ${guests}\n- Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}\n\nAdditional event notes: `;
+        eventNotes.value = 
+`[Estimator Selections: ${PUBLIC_TIERS[selectedTier].name} | ${hours} Hours | ${guests} Guests | Est: ${rangeText} | Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}]
+
+Occasion, Vibe & Cocktail Inspirations:
+• Tell us about the vibe, favorite spirits, or custom signature drink ideas: 
+
+
+Venue & Logistics:
+• Location / venue name, mountain canyon travel, access stairs, or setup notes: 
+`;
       }
 
-      const reserveSection = document.getElementById('reserve');
-      if (reserveSection) {
-        reserveSection.scrollIntoView({ behavior: 'smooth' });
-      }
+      const originalText = applyToFormBtn.textContent;
+      applyToFormBtn.textContent = 'Transferred! Scrolling to Form...';
+
+      setTimeout(() => {
+        const reserveSection = document.getElementById('reserve');
+        if (reserveSection) {
+          reserveSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (eventNotes) {
+          // Focus the textarea so the client can immediately start typing
+          eventNotes.focus();
+        }
+        setTimeout(() => {
+          applyToFormBtn.textContent = originalText;
+        }, 1200);
+      }, 250);
     });
   }
 

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Quoting Tool | Your Place or Mine</title>
+  <meta name="robots" content="noindex, nofollow">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-deep: #09090b;
+      --bg-surface: #121215;
+      --bg-elevated: #1a1a20;
+      --border: #282832;
+      --copper: #d98845;
+      --copper-light: #ffd199;
+      --copper-grad: linear-gradient(135deg, #ffd199 0%, #d98845 50%, #8c4217 100%);
+      --text: #f8f7f5;
+      --text-muted: #a3a19e;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: var(--font-sans);
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .tool-container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .tool-header {
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .tool-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--copper-light);
+    }
+
+    .badge-internal {
+      background: rgba(217, 136, 69, 0.15);
+      border: 1px solid var(--copper);
+      color: var(--copper-light);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* Auth Gate Screen */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .gate-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .gate-box h2 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--copper-light);
+    }
+
+    .gate-input {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 18px 0;
+      letter-spacing: 0.3em;
+    }
+
+    .gate-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--copper-grad);
+      border: none;
+      border-radius: 50px;
+      color: #09090b;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--copper-light);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .field-group {
+      margin-bottom: 18px;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    .field-val {
+      color: var(--copper-light);
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--copper);
+    }
+
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--copper);
+    }
+
+    .radio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .radio-pill {
+      border: 1px solid var(--border);
+      padding: 10px 6px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.82rem;
+      background: var(--bg-elevated);
+      transition: all 0.2s;
+    }
+
+    .radio-pill input { display: none; }
+    .radio-pill.active {
+      border-color: var(--copper);
+      background: rgba(217, 136, 69, 0.12);
+      color: var(--copper-light);
+      font-weight: 600;
+    }
+
+    .checkbox-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cb-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .cb-item input { accent-color: var(--copper); width: 16px; height: 16px; }
+
+    /* Summary & Output Panel */
+    .quote-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 24px;
+    }
+
+    .quote-price {
+      font-size: 3.2rem;
+      font-family: var(--font-serif);
+      color: var(--copper-light);
+      line-height: 1;
+      margin: 8px 0 16px;
+    }
+
+    .breakdown-table {
+      font-size: 0.82rem;
+      margin-bottom: 20px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .b-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      color: var(--text-muted);
+    }
+
+    .b-row span:last-child {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .btn-action {
+      padding: 14px;
+      background: var(--copper-grad);
+      color: #09090b;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: transform 0.2s;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2e7d32;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 820px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .quote-box { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Access Code Gate Screen -->
+  <div class="gate-overlay" id="gateOverlay">
+    <div class="gate-box">
+      <h2>Your Place or Mine</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Enter Internal Access PIN</p>
+      <input type="password" id="pinInput" class="gate-input" maxlength="6" placeholder="••••" autofocus>
+      <button class="gate-btn" id="unlockBtn">Unlock Quoting Engine</button>
+      <p id="gateErr" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Invalid PIN. Default is 2026</p>
+    </div>
+  </div>
+
+  <div class="tool-container" id="mainTool" style="display: none;">
+    <header class="tool-header">
+      <h1 class="tool-title">Executive Quoting Tool</h1>
+      <span class="badge-internal">Confidential • Internal</span>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Input Controls -->
+      <div class="panel">
+        <div class="section-label">01. Client & Event Context</div>
+        <div class="field-group">
+          <div class="field-row">
+            <label for="clientName">Client Name</label>
+          </div>
+          <input type="text" id="clientName" placeholder="e.g. Sarah Jenkins">
+        </div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <label for="eventDate">Event Date & Venue</label>
+          </div>
+          <input type="text" id="eventDate" placeholder="e.g. Sept 18 @ River Bottoms Ranch">
+        </div>
+
+        <div class="section-label" style="margin-top: 24px;">02. Scale & Service Parameters</div>
+        <div class="field-group">
+          <div class="field-row">
+            <label>Guest Count</label>
+            <span id="guestCountDisplay" class="field-val">75 Guests</span>
+          </div>
+          <input type="range" id="guestSlider" min="15" max="300" step="5" value="75">
+        </div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <label>Service Duration</label>
+            <span id="durationDisplay" class="field-val">4 Hours</span>
+          </div>
+          <input type="range" id="durationSlider" min="2" max="8" step="1" value="4">
+        </div>
+
+        <div class="field-group">
+          <div class="field-row"><label>Package Tier</label></div>
+          <div class="radio-grid">
+            <label class="radio-pill">
+              <input type="radio" name="intTier" value="classic"> Classic
+            </label>
+            <label class="radio-pill active">
+              <input type="radio" name="intTier" value="craft" checked> Craft
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="intTier" value="grand"> Grand
+            </label>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top: 24px;">03. Logistics, Travel & Terrain</div>
+        <div class="field-group">
+          <div class="field-row"><label for="travelSelect">Travel Radius / Location</label></div>
+          <select id="travelSelect">
+            <option value="0">Salt Lake Valley / Murray ($0 travel)</option>
+            <option value="120">Park City / Summit County (+$120 mountain canyon travel)</option>
+            <option value="75">Utah County / Davis County (+$75 travel)</option>
+            <option value="140">Sundance / Heber Valley (+$140 canyon travel)</option>
+            <option value="350">Southern Utah / Moab / Destination (+$350 travel/lodging)</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <div class="field-row"><label for="venueDiffSelect">Venue Load-in Complexity</label></div>
+          <select id="venueDiffSelect">
+            <option value="0">Standard Ground Access / Easy Drive-up ($0)</option>
+            <option value="85">Stairs / Elevator / Long Pack-in (+$85 logistics)</option>
+            <option value="120">Remote / No Running Water or Power Hookup (+$120 ice & generator kit)</option>
+          </select>
+        </div>
+
+        <div class="section-label" style="margin-top: 24px;">04. Add-ons & Overrides</div>
+        <div class="checkbox-stack">
+          <label class="cb-item">
+            <input type="checkbox" id="addHydration" value="125">
+            <span>Infused Spa Hydration Station (+$125)</span>
+          </label>
+          <label class="cb-item">
+            <input type="checkbox" id="addChampagne" value="150">
+            <span>Champagne / Prosecco Toast Pouring (+$150)</span>
+          </label>
+          <label class="cb-item">
+            <input type="checkbox" id="addIce" value="175">
+            <span>2" Artisanal Clear Cocktail Ice (+$175)</span>
+          </label>
+          <label class="cb-item">
+            <input type="checkbox" id="addAssistant" value="250">
+            <span>Add Additional Assistant / Barback (+$250 flat)</span>
+          </label>
+        </div>
+
+        <div class="field-group" style="margin-top: 18px;">
+          <div class="field-row">
+            <label for="customAdj">Custom Adjustment ($ +/-)</label>
+          </div>
+          <input type="number" id="customAdj" placeholder="0" value="0">
+        </div>
+      </div>
+
+      <!-- Live Calculation & Export -->
+      <div>
+        <div class="quote-box">
+          <span class="section-label">Calculated Proposal</span>
+          <div class="quote-price" id="quotePrice">$1,070</div>
+
+          <div class="breakdown-table">
+            <div class="b-row">
+              <span>Selected Tier:</span>
+              <span id="bTier">The Craft Signature</span>
+            </div>
+            <div class="b-row">
+              <span>Required Staff:</span>
+              <span id="bStaff">1 Lead Mixologist (Solo Service)</span>
+            </div>
+            <div class="b-row">
+              <span>Base Package Fee:</span>
+              <span id="bBase">$520</span>
+            </div>
+            <div class="b-row">
+              <span>Guest Consumables:</span>
+              <span id="bGuests">$413</span>
+            </div>
+            <div class="b-row">
+              <span>Hourly Adjustment:</span>
+              <span id="bHours">$0 (Standard 4h)</span>
+            </div>
+            <div class="b-row">
+              <span>Travel & Terrain:</span>
+              <span id="bTravel">$0</span>
+            </div>
+            <div class="b-row">
+              <span>Add-ons / Overrides:</span>
+              <span id="bAddons">$0</span>
+            </div>
+          </div>
+
+          <button class="btn-action" id="copyProposalBtn">Copy Client Proposal Email</button>
+          <button class="btn-secondary" id="resetBtn">Reset Parameters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Proposal copied to clipboard!</div>
+
+  <script>
+    // Security PIN Gate (Default 2026, saved in session)
+    const PIN = "2026";
+    const gateOverlay = document.getElementById('gateOverlay');
+    const mainTool = document.getElementById('mainTool');
+    const pinInput = document.getElementById('pinInput');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const gateErr = document.getElementById('gateErr');
+
+    function checkAuth() {
+      if (sessionStorage.getItem('ypom_auth') === 'true') {
+        gateOverlay.style.display = 'none';
+        mainTool.style.display = 'block';
+      }
+    }
+    checkAuth();
+
+    function tryUnlock() {
+      if (pinInput.value === PIN) {
+        sessionStorage.setItem('ypom_auth', 'true');
+        gateOverlay.style.display = 'none';
+        mainTool.style.display = 'block';
+      } else {
+        gateErr.style.display = 'block';
+        pinInput.value = '';
+      }
+    }
+
+    unlockBtn.addEventListener('click', tryUnlock);
+    pinInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') tryUnlock(); });
+
+    // Quoting Engine Variables
+    const TIER_CFG = {
+      classic: { name: 'The Classic Pour', base: 350, perGuest: 4.00, desc: 'Beer, Wine & 2-Ingredient Highball Service' },
+      craft: { name: 'The Craft Signature', base: 520, perGuest: 5.50, desc: '2 Signature Cocktails, Craft Syrups, Citrus & Aromatics' },
+      grand: { name: 'The Grand Lounge', base: 850, perGuest: 7.50, desc: '3 Signature Cocktails + 1 Curated Mocktail Salon' }
+    };
+
+    const guestSlider = document.getElementById('guestSlider');
+    const durationSlider = document.getElementById('durationSlider');
+    const guestCountDisplay = document.getElementById('guestCountDisplay');
+    const durationDisplay = document.getElementById('durationDisplay');
+    const travelSelect = document.getElementById('travelSelect');
+    const venueDiffSelect = document.getElementById('venueDiffSelect');
+    const customAdj = document.getElementById('customAdj');
+    const radioPills = document.querySelectorAll('.radio-pill');
+
+    const quotePrice = document.getElementById('quotePrice');
+    const bTier = document.getElementById('bTier');
+    const bStaff = document.getElementById('bStaff');
+    const bBase = document.getElementById('bBase');
+    const bGuests = document.getElementById('bGuests');
+    const bHours = document.getElementById('bHours');
+    const bTravel = document.getElementById('bTravel');
+    const bAddons = document.getElementById('bAddons');
+
+    function calculate() {
+      const guests = parseInt(guestSlider.value, 10);
+      const hours = parseInt(durationSlider.value, 10);
+      let selectedTier = 'craft';
+
+      radioPills.forEach(rp => {
+        const input = rp.querySelector('input');
+        if (input.checked) selectedTier = input.value;
+        rp.classList.toggle('active', input.checked);
+      });
+
+      const tier = TIER_CFG[selectedTier];
+
+      // Staffing calculation: Solo capacity up to 100 guests
+      let staffCount = 1;
+      let staffLabel = '1 Lead Mixologist (Solo Service)';
+
+      if (guests > 175) {
+        staffCount = 3;
+        staffLabel = '3 Staff (2 Certified Bartenders + Barback)';
+      } else if (guests > 100) {
+        staffCount = 2;
+        staffLabel = '2 Certified Bartenders';
+      }
+
+      // If manual assistant added
+      if (document.getElementById('addAssistant').checked) {
+        staffCount += 1;
+        staffLabel += ' + Dedicated Barback';
+      }
+
+      // Guest fee
+      const guestFee = Math.round(guests * tier.perGuest);
+
+      // Hourly scaling
+      let hrFee = 0;
+      let hrLabel = '$0 (Standard 4h)';
+      if (hours > 4) {
+        const extraH = hours - 4;
+        hrFee = extraH * (staffCount * 65);
+        hrLabel = `+$${hrFee} (+${extraH}h)`;
+      } else if (hours < 4) {
+        const lessH = 4 - hours;
+        hrFee = -(lessH * (staffCount * 35));
+        hrLabel = `-$${Math.abs(hrFee)} (-${lessH}h)`;
+      }
+
+      // Travel & Venue Logistics
+      const travelFee = parseInt(travelSelect.value, 10);
+      const venueFee = parseInt(venueDiffSelect.value, 10);
+      const logisticsFee = travelFee + venueFee;
+
+      // Add-ons
+      let addonsSum = 0;
+      if (document.getElementById('addHydration').checked) addonsSum += 125;
+      if (document.getElementById('addChampagne').checked) addonsSum += 150;
+      if (document.getElementById('addIce').checked) addonsSum += 175;
+      if (document.getElementById('addAssistant').checked) addonsSum += 250;
+
+      const adj = parseInt(customAdj.value, 10) || 0;
+      const total = tier.base + guestFee + hrFee + logisticsFee + addonsSum + adj;
+
+      // UI Updates
+      guestCountDisplay.textContent = `${guests} Guests`;
+      durationDisplay.textContent = `${hours} Hours`;
+      quotePrice.textContent = `$${total.toLocaleString()}`;
+
+      bTier.textContent = tier.name;
+      bStaff.textContent = staffLabel;
+      bBase.textContent = `$${tier.base}`;
+      bGuests.textContent = `$${guestFee} ($${tier.perGuest}/guest)`;
+      bHours.textContent = hrLabel;
+      bTravel.textContent = `$${logisticsFee}`;
+      bAddons.textContent = `+$${addonsSum + adj}`;
+    }
+
+    [guestSlider, durationSlider, travelSelect, venueDiffSelect, customAdj].forEach(el => {
+      el.addEventListener('input', calculate);
+    });
+
+    radioPills.forEach(rp => {
+      rp.addEventListener('click', () => {
+        rp.querySelector('input').checked = true;
+        calculate();
+      });
+    });
+
+    document.querySelectorAll('.cb-item input').forEach(cb => {
+      cb.addEventListener('change', calculate);
+    });
+
+    calculate();
+
+    // Copy Formal Proposal Email
+    document.getElementById('copyProposalBtn').addEventListener('click', () => {
+      const client = document.getElementById('clientName').value.trim() || 'Client';
+      const eventDetails = document.getElementById('eventDate').value.trim() || 'your upcoming event';
+      const guests = guestSlider.value;
+      const hours = durationSlider.value;
+      const total = quotePrice.textContent;
+      const staff = bStaff.textContent;
+      const tierName = bTier.textContent;
+      const travelText = travelSelect.options[travelSelect.selectedIndex].text;
+
+      const template = `Hi ${client},
+
+Thank you for inquiring with Your Place or Mine! We are thrilled at the opportunity to curate the cocktail experience for ${eventDetails}.
+
+Based on your event parameters (${guests} guests, ${hours} hours of service), here is your customized dry-hire service proposal:
+
+PACKAGE INCLUSIONS:
+• Service Tier: ${tierName}
+• Dedicated Service Duration: ${hours} Hours (+ comprehensive setup and breakdown)
+• Professional Staffing: ${staff}
+• Handcrafted Syrups, Fresh Citrus Cordials & Dehydrated Botanicals
+• Full Mobile Bar Equipment, Coolers, Chillers & Ice Well Station
+• Custom Curated Retail Alcohol Buying Blueprint (scaled precisely to guest count)
+• $2,000,000 General & Liquor Liability Insurance Policy (COI provided upon request)
+
+LOCATION & LOGISTICS:
+• ${travelText}
+
+TOTAL ESTIMATED INVESTMENT: ${total}
+
+*HOW DRY-HIRE COMPLIANCE WORKS:
+In compliance with state liquor laws, alcohol is purchased directly by you at retail prices, saving you the 300%+ markups charged by traditional caterers. We supply everything else: mixers, syrups, garnish art, tools, ice, and licensed mixologists.
+
+To secure this date on our calendar, a 50% deposit and signed service agreement are required. Please let us know if you would like us to send over the formal agreement or schedule a menu consultation!
+
+Warm regards,
+
+Your Place or Mine | Mobile Bar & Craft Mixology
+cheers@yourplaceormine.bar
+https://yourplaceormine.bar`;
+
+      navigator.clipboard.writeText(template).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('clientName').value = '';
+      document.getElementById('eventDate').value = '';
+      guestSlider.value = 75;
+      durationSlider.value = 4;
+      travelSelect.value = 0;
+      venueDiffSelect.value = 0;
+      customAdj.value = 0;
+      document.querySelectorAll('.cb-item input').forEach(c => c.checked = false);
+      calculate();
+    });
+  </script>
+</body>
+</html>

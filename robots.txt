@@ -52,4 +52,5 @@ Disallow: /
 User-agent: *
 Disallow: /.git/
 Disallow: /LICENSE
+Disallow: /price.html
 Allow: /
