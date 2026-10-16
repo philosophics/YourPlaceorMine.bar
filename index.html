@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Place or Mine | Luxury Mobile Bar & Craft Bartending</title>
+  <meta name="description" content="Elevated mobile bartending, craft cocktail service, and dry-hire event curation.">
+  
+  <!-- Preconnect Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <span class="logo-light">Your Place</span>
+        <span class="logo-accent">or Mine</span>
+      </a>
+      
+      <nav class="desktop-nav">
+        <a href="#about">The Experience</a>
+        <a href="#services">Packages</a>
+        <a href="#estimator">Quote Estimator</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <a href="#reserve" class="btn btn-copper nav-cta">Reserve Date</a>
+
+      <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer" id="mobileDrawer">
+      <nav>
+        <a href="#about" class="drawer-link">The Experience</a>
+        <a href="#services" class="drawer-link">Packages</a>
+        <a href="#estimator" class="drawer-link">Quote Estimator</a>
+        <a href="#faq" class="drawer-link">FAQ</a>
+        <a href="#reserve" class="btn btn-copper drawer-cta">Reserve Date</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-content">
+        <div class="pill-badge">Bespoke Mobile Mixology & Bar Services</div>
+        <h1 class="hero-title">Elevate Your Gathering. <br><span class="copper-text">We Bring The Bar.</span></h1>
+        <p class="hero-lead">Custom craft syrups, curated shopping guides, and professional TIPS-certified bartending delivered directly to weddings, private dinners, and corporate events.</p>
+        
+        <div class="hero-actions">
+          <a href="#estimator" class="btn btn-copper">Calculate Estimate</a>
+          <a href="#reserve" class="btn btn-outline">Check Availability</a>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-item">
+            <span class="trust-copper">✓</span> Fully Certified & Insured ($2M Liability)
+          </div>
+          <div class="trust-item">
+            <span class="trust-copper">✓</span> Dry-Hire Transparency (Save on Alcohol Markups)
+          </div>
+          <div class="trust-item">
+            <span class="trust-copper">✓</span> Custom Handcrafted Syrups & Shrubs
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dry Hire Explanation -->
+    <section id="about" class="section-padding bg-subtle">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">The Dry-Hire Model</span>
+          <h2>How Mobile Event Bartending Works</h2>
+          <p class="section-desc">By operating under a dry-hire framework, you skip standard 300% caterer markups. You buy the alcohol at retail; we provide everything else required for exceptional service.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="info-card">
+            <div class="card-num">01</div>
+            <h3>Custom Menu Design</h3>
+            <p>We work with you to engineer a balanced signature cocktail lineup reflecting your taste and theme, including house-made syrups, fresh garnishes, and craft bitters.</p>
+          </div>
+          <div class="info-card">
+            <div class="card-num">02</div>
+            <h3>Calculated Shopping List</h3>
+            <p>We provide an itemized retail shopping list specifying exact quantities of spirits, beer, wine, and champagne based on guest count and service duration.</p>
+          </div>
+          <div class="info-card">
+            <div class="card-num">03</div>
+            <h3>Full-Service Execution</h3>
+            <p>We supply the mobile bar station, bar tools, fresh mixers, juices, coolers, ice management, garnish station, and certified bartenders from load-in to breakdown.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="services" class="section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Curated Packages</span>
+          <h2>Tailored To Your Event</h2>
+        </div>
+
+        <div class="grid-3">
+          <div class="tier-card">
+            <div class="tier-header">
+              <h3>The Classic Pour</h3>
+              <p class="tier-subtitle">Beer, Wine & Mixed Service</p>
+              <div class="tier-price">Starting at <span>$550</span></div>
+            </div>
+            <ul class="tier-features">
+              <li>Up to 4 hours of dedicated bar service</li>
+              <li>1 Certified Bartender</li>
+              <li>Bar tool kit, ice coolers, pour spouts</li>
+              <li>Beer, wine & simple highball service</li>
+              <li>Custom itemized alcohol shopping guide</li>
+              <li>Setup & breakdown included</li>
+            </ul>
+            <a href="#reserve" class="btn btn-outline full-width">Select Tier</a>
+          </div>
+
+          <div class="tier-card featured-tier">
+            <div class="featured-badge">Most Popular</div>
+            <div class="tier-header">
+              <h3>The Craft Signature</h3>
+              <p class="tier-subtitle">Bespoke Cocktail Service</p>
+              <div class="tier-price">Starting at <span>$850</span></div>
+            </div>
+            <ul class="tier-features">
+              <li>Up to 4 hours of dedicated bar service</li>
+              <li>2 Certified Bartenders</li>
+              <li>2 Custom Signature Craft Cocktails</li>
+              <li>House-made syrups, purees & fresh citrus</li>
+              <li>Dehydrated garnishes, herbs & aromatics</li>
+              <li>Full bar tool station, chillers & supplies</li>
+              <li>Itemized retail alcohol buying plan</li>
+            </ul>
+            <a href="#reserve" class="btn btn-copper full-width">Select Tier</a>
+          </div>
+
+          <div class="tier-card">
+            <div class="tier-header">
+              <h3>The Grand Lounge</h3>
+              <p class="tier-subtitle">All-Inclusive Luxury Setup</p>
+              <div class="tier-price">Starting at <span>$1,350</span></div>
+            </div>
+            <ul class="tier-features">
+              <li>Up to 5 hours of dedicated bar service</li>
+              <li>2-3 Certified Bartenders + Bar Back</li>
+              <li>3 Signature Cocktails + 1 Mocktail Creation</li>
+              <li>Custom-printed framed bar menus</li>
+              <li>Infused hydration station (cuc/mint/citrus)</li>
+              <li>Champagne / Prosecco toast pour service</li>
+              <li>Priority pre-event cocktail tasting session</li>
+            </ul>
+            <a href="#reserve" class="btn btn-outline full-width">Select Tier</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Cost Estimator -->
+    <section id="estimator" class="section-padding bg-subtle">
+      <div class="container">
+        <div class="estimator-wrapper">
+          <div class="estimator-form">
+            <span class="eyebrow">Real-Time Estimator</span>
+            <h2>Estimate Your Event</h2>
+            <p class="text-muted">Adjust guest count and services to review approximate baseline costs.</p>
+
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>Guest Count:</span>
+                <span id="guestCountVal" class="ctrl-val">75 Guests</span>
+              </div>
+              <input type="range" id="guestSlider" min="20" max="250" step="5" value="75">
+            </div>
+
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>Service Duration:</span>
+                <span id="durationVal" class="ctrl-val">4 Hours</span>
+              </div>
+              <input type="range" id="durationSlider" min="2" max="6" step="1" value="4">
+            </div>
+
+            <div class="ctrl-group">
+              <label>Select Service Tier:</label>
+              <div class="radio-cards">
+                <label class="radio-card">
+                  <input type="radio" name="tierSelect" value="classic">
+                  <span class="rc-label">Classic Pour</span>
+                </label>
+                <label class="radio-card active">
+                  <input type="radio" name="tierSelect" value="craft" checked>
+                  <span class="rc-label">Craft Signature</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="tierSelect" value="grand">
+                  <span class="rc-label">Grand Lounge</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ctrl-group">
+              <label>Service Add-ons:</label>
+              <div class="checkbox-list">
+                <label class="cb-label">
+                  <input type="checkbox" id="addonHydration" value="125">
+                  <span>Infused Hydration Station (+$125)</span>
+                </label>
+                <label class="cb-label">
+                  <input type="checkbox" id="addonChampagne" value="150">
+                  <span>Champagne / Prosecco Toast Service (+$150)</span>
+                </label>
+                <label class="cb-label">
+                  <input type="checkbox" id="addonClearIce" value="175">
+                  <span>Artisanal Clear 2" Cocktail Ice (+$175)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="estimator-summary">
+            <h3>Estimated Investment</h3>
+            <div class="est-price" id="totalEstimate">$975</div>
+            <p class="est-note">*Dry-hire base quote. Alcohol purchased separately at cost without caterer markup.</p>
+            
+            <div class="summary-breakdown">
+              <div class="breakdown-row">
+                <span>Staffing:</span>
+                <span id="summaryStaff">2 Certified Bartenders</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Base Tier:</span>
+                <span id="summaryTier">Craft Signature</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Hourly Extension:</span>
+                <span id="summaryHours">$0 (Standard 4h)</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Selected Add-ons:</span>
+                <span id="summaryAddons">$0</span>
+              </div>
+            </div>
+
+            <button class="btn btn-copper full-width" id="applyToForm">Apply Details to Inquiry Form</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking / Contact Form -->
+    <section id="reserve" class="section-padding">
+      <div class="container max-w-700">
+        <div class="section-header">
+          <span class="eyebrow">Check Availability</span>
+          <h2>Reserve Your Date</h2>
+          <p class="section-desc">Dates fill rapidly for peak wedding and holiday seasons. Complete the inquiry below and we will return a formal proposal within 24 hours.</p>
+        </div>
+
+        <form id="bookingForm" class="booking-form">
+          <div class="form-row">
+            <div class="form-col">
+              <label for="clientName">Full Name *</label>
+              <input type="text" id="clientName" required placeholder="Jane Doe">
+            </div>
+            <div class="form-col">
+              <label for="clientEmail">Email Address *</label>
+              <input type="email" id="clientEmail" required placeholder="jane@example.com">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <label for="clientPhone">Phone Number *</label>
+              <input type="tel" id="clientPhone" required placeholder="(801) 555-0199">
+            </div>
+            <div class="form-col">
+              <label for="eventDate">Event Date *</label>
+              <input type="date" id="eventDate" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <label for="eventLocation">Event Location / City *</label>
+              <input type="text" id="eventLocation" required placeholder="Salt Lake City, Park City, etc.">
+            </div>
+            <div class="form-col">
+              <label for="formGuests">Guest Count</label>
+              <input type="number" id="formGuests" min="10" max="500" value="75">
+            </div>
+          </div>
+
+          <div class="form-col full-col">
+            <label for="eventNotes">Cocktail Preferences & Event Details</label>
+            <textarea id="eventNotes" rows="4" placeholder="Tell us about the vibe, favorite spirits, venue setup, or custom cocktail inspirations..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-copper full-width submit-btn">Submit Booking Request</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section id="faq" class="section-padding bg-subtle">
+      <div class="container max-w-700">
+        <div class="section-header">
+          <span class="eyebrow">Answers</span>
+          <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">What does "Dry Hire" mean?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">
+              <p>Under a dry-hire license, you purchase the alcohol directly at retail prices, saving substantial caterer markups. We handle everything else: licensing, insurance, syrups, garnishes, mixers, ice, barware, and professional bartenders.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">Are your bartenders certified and insured?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">
+              <p>Yes. All bartenders hold active state server/alcohol handling permits. We carry a comprehensive $2,000,000 General & Liquor Liability policy and can provide certificates of insurance (COI) to your venue upon request.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">How far in advance do we need to book?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">
+              <p>For peak wedding and autumn dates, booking 4 to 8 months in advance is recommended. A 50% deposit and signed agreement secure your date on our calendar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <span class="logo-light">Your Place</span>
+          <span class="logo-accent">or Mine</span>
+        </div>
+        <p>Bespoke mobile bartending and craft mixology.</p>
+      </div>
+      <div class="footer-legal">
+        <p>&copy; 2026 Your Place or Mine. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
