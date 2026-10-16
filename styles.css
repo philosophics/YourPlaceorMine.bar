@@ -53,68 +53,120 @@ body {
   overflow-x: clip;
 }
 
-/* Contained Ambient Radial Glows */
+/* ========================================================
+   HARDWARE-ACCELERATED AMBIENT MIST (Zero CPU, Film Grain)
+   ======================================================== */
 .ambient-wrapper {
   position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  /* contain: strict removed: eliminates compositor tile invalidation flicker at y=0 */
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* Micro-Fine Analog Film Fuzz (Particle size halved, volume reduced by 60%) */
+.ambient-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* baseFrequency 1.65 creates microscopic grain; opacity 0.022 softens visibility to a gentle velvet */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.022'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 0;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .ambient-glow {
   position: absolute;
+  width: 750px;
+  height: 750px;
   border-radius: 50%;
-  filter: blur(40px);
-  will-change: transform, opacity;
+  filter: blur(45px); /* Restores the exact soft GPU fuzz you preferred */
+  will-change: transform;
+  pointer-events: none;
+  opacity: 1; /* Rock-solid constant opacity */
+  z-index: 1; /* Floats IN FRONT of background grain to eliminate temporal moiré */
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
+/* Upper Ambient Glow (Fuzzy Ultra Gradient - Hero & Nav Area) */
 .glow-top {
-  width: min(750px, 100vw);
-  height: 500px;
   background: radial-gradient(
-    ellipse at center,
-    rgba(217, 136, 69, 0.16) 0%,
-    rgba(217, 136, 69, 0.12) 20%,
-    rgba(217, 136, 69, 0.08) 40%,
-    rgba(217, 136, 69, 0.04) 60%,
-    rgba(217, 136, 69, 0.012) 80%,
-    rgba(217, 136, 69, 0) 100%
+    circle closest-side at center,
+    rgba(255, 214, 165, 0.20) 0%,   /* Glowing molten champagne core */
+    rgba(235, 155, 85, 0.14) 18%,   /* Warm luminous amber bloom */
+    rgba(217, 136, 69, 0.08) 36%,   /* Rich metallic copper body */
+    rgba(175, 90, 35, 0.025) 52%,   /* Burnished bronze shadow */
+    rgba(70, 25, 6, 0.005) 64%,     /* Deep smoky cognac halo */
+    transparent 72%                 /* Borderless fadeout (105px margin before box edge) */
   );
-  top: -180px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: breatheTop 16s infinite alternate ease-in-out;
+  top: -220px;
+  left: calc(50% - 375px);
+  animation: driftTopOrb 32s infinite ease-in-out;
 }
 
+/* Mid-Page Ambient Glow (Fuzzy Ultra Gradient - Estimator & Packages Area) */
 .glow-mid {
-  width: min(700px, 95vw);
-  height: 600px;
   background: radial-gradient(
-    ellipse at center,
-    rgba(217, 136, 69, 0.10) 0%,
-    rgba(217, 136, 69, 0.075) 20%,
-    rgba(217, 136, 69, 0.045) 45%,
-    rgba(217, 136, 69, 0.02) 70%,
-    rgba(217, 136, 69, 0.005) 85%,
-    rgba(217, 136, 69, 0) 100%
+    circle closest-side at center,
+    rgba(255, 214, 165, 0.16) 0%,
+    rgba(235, 155, 85, 0.11) 20%,
+    rgba(217, 136, 69, 0.06) 38%,
+    rgba(175, 90, 35, 0.016) 54%,
+    rgba(70, 25, 6, 0.003) 64%,
+    transparent 72%
   );
-  top: 55%;
-  right: -80px;
-  animation: breatheMid 18s infinite alternate ease-in-out;
+  top: 45%;
+  right: -120px;
+  animation: driftMidOrb 38s infinite ease-in-out;
 }
 
-@keyframes breatheTop {
-  0% { transform: translateX(-50%) translateY(0); opacity: 0.8; }
-  100% { transform: translateX(-50%) translateY(25px); opacity: 1.05; }
+/* Continuous 4-Point Orbital Drift (Zero acceleration dead-stops) */
+@keyframes driftTopOrb {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(50px, 30px, 0);
+  }
+  50% {
+    transform: translate3d(0, 55px, 0);
+  }
+  75% {
+    transform: translate3d(-50px, 25px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
-@keyframes breatheMid {
-  0% { transform: translate3d(0, 0, 0); opacity: 0.65; }
-  100% { transform: translate3d(-35px, -45px, 0); opacity: 0.95; }
+@keyframes driftMidOrb {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-80px, -40px, 0);
+  }
+  50% {
+    transform: translate3d(-35px, -90px, 0);
+  }
+  75% {
+    transform: translate3d(55px, -45px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
+/* ========================================================
+   CONTAINERS & TYPOGRAPHY
+   ======================================================== */
 .container {
   width: 90%;
   max-width: 1180px;
@@ -141,7 +193,6 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* Typography & Headings */
 h1, h2, h3 {
   font-family: var(--font-serif);
   font-weight: 500;
@@ -206,7 +257,6 @@ h1, h2, h3 {
   border: 1px solid transparent;
 }
 
-/* Polished Metallic Copper Button */
 .btn-copper {
   background: var(--copper-gradient);
   color: #09090b;
@@ -245,7 +295,7 @@ h1, h2, h3 {
   width: 100%;
 }
 
-/* Header */
+/* Site Header */
 .site-header {
   position: sticky;
   top: 0;
@@ -311,7 +361,7 @@ h1, h2, h3 {
   color: var(--copper-light);
 }
 
-/* Redesigned Minimalist Hamburger Toggle */
+/* Minimalist Hamburger Toggle */
 .mobile-toggle {
   display: none;
   background: none;
@@ -337,7 +387,6 @@ h1, h2, h3 {
   transition: transform 0.3s var(--ease-smooth), opacity 0.2s, background-color 0.2s;
 }
 
-/* Morph Hamburger to "X" when active */
 .mobile-toggle.active .bar-1 {
   transform: translateY(7px) rotate(45deg);
   background-color: var(--copper-light);
@@ -353,7 +402,7 @@ h1, h2, h3 {
   background-color: var(--copper-light);
 }
 
-/* Luxury Mobile Drawer Styling */
+/* Mobile Drawer */
 .mobile-drawer {
   display: none;
   width: 100%;
@@ -507,8 +556,6 @@ h1, h2, h3 {
 /* ========================================================
    BI-DIRECTIONAL SPRING THROW & BOUNCE ENGINE
    ======================================================== */
-
-/* Hero Load-In Cascade */
 .anim-load {
   opacity: 0;
   transform: translateY(24px) scale(0.98);
@@ -529,7 +576,6 @@ h1, h2, h3 {
   }
 }
 
-/* Base: Element rest state below the viewport */
 .reveal {
   opacity: 0;
   transform: translateY(44px) scale(0.96);
@@ -539,13 +585,11 @@ h1, h2, h3 {
   will-change: opacity, transform;
 }
 
-/* In-View: Thrown in with subtle organic overshoot bounce */
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-/* Exited Top: Smooth upward fade-out as user scrolls down past */
 .reveal.scrolled-above {
   opacity: 0;
   transform: translateY(-44px) scale(0.96);
@@ -554,7 +598,6 @@ h1, h2, h3 {
     transform 0.65s var(--ease-smooth);
 }
 
-/* Staggered Ensemble Children */
 .reveal-stagger .reveal-item {
   opacity: 0;
   transform: translateY(44px) scale(0.96);
@@ -827,7 +870,9 @@ h1, h2, h3 {
   color: var(--text-main);
 }
 
-/* Estimator */
+/* ========================================================
+   ESTIMATOR COMPONENT
+   ======================================================== */
 .estimator-wrapper {
   display: grid;
   grid-template-columns: 1fr 390px;
@@ -1026,14 +1071,6 @@ input[type="range"]::-moz-range-thumb {
   margin: 8px 0 0;
 }
 
-.est-dollar {
-  font-size: 1.8rem;
-  font-family: var(--font-serif);
-  color: var(--copper-base);
-  margin-right: 4px;
-  line-height: 1.1;
-}
-
 .est-amount {
   font-size: clamp(2.3rem, 3.2vw, 3.1rem);
   font-family: var(--font-serif);
@@ -1077,7 +1114,9 @@ input[type="range"]::-moz-range-thumb {
   font-weight: 500;
 }
 
-/* Booking Form */
+/* ========================================================
+   BOOKING FORM & EXPANDED TEXTAREA
+   ======================================================== */
 .booking-form {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -1131,6 +1170,13 @@ input:focus, textarea:focus {
   outline: none;
   border-color: var(--copper-base);
   box-shadow: 0 0 12px var(--copper-glow);
+}
+
+/* Dedicated Textarea Sizing: Opens at ~280px without scrollbar */
+.booking-form textarea {
+  min-height: 280px;
+  line-height: 1.6;
+  resize: vertical;
 }
 
 /* FAQ */
@@ -1467,6 +1513,10 @@ input:focus, textarea:focus {
     padding: 28px 20px;
   }
 
+  .booking-form textarea {
+    min-height: 240px;
+  }
+
   .estimator-wrapper {
     padding: 20px 16px;
   }
@@ -1476,7 +1526,7 @@ input:focus, textarea:focus {
   }
 
   .est-amount {
-    font-size: 2.9rem;
+    font-size: 2.5rem;
   }
 
   .faq-question {
@@ -1505,5 +1555,8 @@ input:focus, textarea:focus {
   .reveal-stagger .reveal-item {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .glow-top, .glow-mid {
+    animation: none !important;
   }
 }
