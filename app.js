@@ -8,17 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = entry.boundingClientRect;
 
         if (entry.isIntersecting) {
-          // Element entered the viewport (from top or bottom) -> Throw in with bounce
           entry.target.classList.add('is-visible');
           entry.target.classList.remove('scrolled-above');
         } else {
-          // Element left the viewport
           if (rect.top < 0) {
-            // Exited through the TOP -> Transition up out of view
             entry.target.classList.remove('is-visible');
             entry.target.classList.add('scrolled-above');
           } else {
-            // Exited through the BOTTOM -> Reset to base state below
             entry.target.classList.remove('is-visible');
             entry.target.classList.remove('scrolled-above');
           }
@@ -68,20 +64,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryAddons = document.getElementById('summaryAddons');
   const applyToFormBtn = document.getElementById('applyToForm');
 
-  const BASE_PRICES = {
-    classic: 550,
-    craft: 850,
-    grand: 1350
-  };
-
-  const TIER_NAMES = {
-    classic: 'The Classic Pour',
-    craft: 'The Craft Signature',
-    grand: 'The Grand Lounge'
+  // Realistic Dry-Hire Package & Consumable Rates
+  // Calibrated so 50 guests @ 4 hours = $550 (Classic), $850 (Craft), $1,350 (Grand)
+  const TIER_CONFIG = {
+    classic: {
+      name: 'The Classic Pour',
+      baseFee: 350,
+      perGuest: 4,      // Mixers, highball garnishes, ice, cups, napkins
+      baseStaff: 1
+    },
+    craft: {
+      name: 'The Craft Signature',
+      baseFee: 550,
+      perGuest: 6,      // Craft syrups, fresh citrus cordials, aromatics, craft ice
+      baseStaff: 2
+    },
+    grand: {
+      name: 'The Grand Lounge',
+      baseFee: 950,
+      perGuest: 8,      // 3 signature syrups, mocktail infusions, spa waters, custom menus
+      baseStaff: 3      // 2 bartenders + 1 barback
+    }
   };
 
   function updateEstimator() {
-    if (!guestSlider) return;
+    if (!guestSlider || !durationSlider || !totalEstimate) return;
 
     const guests = parseInt(guestSlider.value, 10);
     const hours = parseInt(durationSlider.value, 10);
@@ -93,32 +100,85 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) card.classList.toggle('active', radio.checked);
     });
 
-    // Staffing calculations
-    let bartenders = 1;
-    if (guests > 65 || selectedTier === 'craft') bartenders = 2;
-    if (guests > 140 || selectedTier === 'grand') bartenders = 3;
+    const tier = TIER_CONFIG[selectedTier];
 
-    // Overtime / Extra hour logic
-    const baseIncludedHours = selectedTier === 'grand' ? 5 : 4;
-    const extraHours = Math.max(0, hours - baseIncludedHours);
-    const hourlyFee = extraHours * (bartenders * 65);
+    // 1. Staffing allocation based on tier and guest count
+    let bartenders = tier.baseStaff;
+    let staffLabel = `${bartenders} Certified Bartender${bartenders > 1 ? 's' : ''}`;
 
-    // Addons calculation
+    if (selectedTier === 'classic') {
+      if (guests <= 65) {
+        bartenders = 1;
+        staffLabel = '1 Certified Bartender';
+      } else if (guests <= 130) {
+        bartenders = 2;
+        staffLabel = '2 Certified Bartenders';
+      } else {
+        bartenders = 3;
+        staffLabel = '3 Staff (2 Bartenders + Barback)';
+      }
+    } else if (selectedTier === 'craft') {
+      if (guests <= 110) {
+        bartenders = 2;
+        staffLabel = '2 Certified Bartenders';
+      } else if (guests <= 180) {
+        bartenders = 3;
+        staffLabel = '3 Staff (2 Bartenders + Barback)';
+      } else {
+        bartenders = 4;
+        staffLabel = '4 Staff (3 Bartenders + Barback)';
+      }
+    } else { // grand
+      if (guests <= 130) {
+        bartenders = 3;
+        staffLabel = '3 Staff (2 Bartenders + Barback)';
+      } else {
+        bartenders = 4;
+        staffLabel = '4 Staff (3 Bartenders + Barback)';
+      }
+    }
+
+    // Additional staffing fee if guest count exceeds base package staff coverage
+    const extraStaffCount = Math.max(0, bartenders - tier.baseStaff);
+    const extraStaffFee = extraStaffCount * 180;
+
+    // 2. Per-Guest Consumables / Ingredients Fee
+    const guestFee = guests * tier.perGuest;
+
+    // 3. Hourly Service Duration Adjustment (4 hours standard)
+    let hourlyAdjustment = 0;
+    let hoursLabel = '$0 (Standard 4h)';
+
+    if (hours === 4) {
+      hourlyAdjustment = 0;
+      hoursLabel = '$0 (Standard 4h)';
+    } else if (hours > 4) {
+      const extraH = hours - 4;
+      hourlyAdjustment = extraH * (bartenders * 65);
+      hoursLabel = `+$${hourlyAdjustment} (+${extraH}h @ ${bartenders} staff)`;
+    } else {
+      const lessH = 4 - hours;
+      hourlyAdjustment = -(lessH * (bartenders * 40));
+      hoursLabel = `-$${Math.abs(hourlyAdjustment)} (-${lessH}h reduced duration)`;
+    }
+
+    // 4. Add-on Enhancements
     let addonSum = 0;
     addonCheckboxes.forEach(cb => {
       if (cb.checked) addonSum += parseInt(cb.value, 10);
     });
 
-    const total = BASE_PRICES[selectedTier] + hourlyFee + addonSum;
+    // 5. Total Investment Calculation
+    const total = tier.baseFee + guestFee + extraStaffFee + hourlyAdjustment + addonSum;
 
     // UI Updates
     guestCountVal.textContent = `${guests} Guests`;
     durationVal.textContent = `${hours} Hours`;
     totalEstimate.textContent = total.toLocaleString();
-    summaryStaff.textContent = `${bartenders} Certified Bartender${bartenders > 1 ? 's' : ''}`;
-    summaryTier.textContent = TIER_NAMES[selectedTier];
-    summaryHours.textContent = extraHours > 0 ? `+$${hourlyFee} (${extraHours} extra hrs)` : `$0 (Standard)`;
-    summaryAddons.textContent = `+$${addonSum}`;
+    if (summaryStaff) summaryStaff.textContent = staffLabel;
+    if (summaryTier) summaryTier.textContent = tier.name;
+    if (summaryHours) summaryHours.textContent = hoursLabel;
+    if (summaryAddons) summaryAddons.textContent = `+$${addonSum}`;
   }
 
   if (guestSlider) {
@@ -129,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateEstimator();
   }
 
-  // --- Connect Estimator to Inquiry Form ---
+  // --- Connect Estimator Selections to Inquiry Form ---
   if (applyToFormBtn) {
     applyToFormBtn.addEventListener('click', () => {
       const guests = guestSlider.value;
@@ -150,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (eventNotes) {
-        eventNotes.value = `Applied from estimator:\n- Selected Package: ${TIER_NAMES[selectedTier]}\n- Planned Service Duration: ${hours} Hours\n- Estimated Guest Count: ${guests}\n- Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}\n\nAdditional event notes: `;
+        eventNotes.value = `Applied from estimator:\n- Selected Package: ${TIER_CONFIG[selectedTier].name}\n- Planned Service Duration: ${hours} Hours\n- Estimated Guest Count: ${guests}\n- Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}\n\nAdditional event notes: `;
       }
 
       const reserveSection = document.getElementById('reserve');
