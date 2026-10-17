@@ -220,6 +220,19 @@ Venue & Logistics:
   const modalRecap = document.getElementById('modalRecap');
   const closeModal = document.getElementById('closeModal');
 
+  // Helper to format "YYYY-MM-DD" into "Thursday, April 1, 2027"
+  function formatDisplayDate(dateStr) {
+    if (!dateStr) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    return dateObj.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
   if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -230,6 +243,7 @@ Venue & Logistics:
       submitBtn.querySelector('.btn-text').textContent = 'Submitting Request...';
 
       const formData = new FormData(bookingForm);
+      const displayDate = formatDisplayDate(formData.get('event_date'));
 
       try {
         const response = await fetch('https://api.web3forms.com/submit', {
@@ -241,8 +255,8 @@ Venue & Logistics:
         if (data.success) {
           if (modalRecap) {
             modalRecap.innerHTML = `
-              <strong>Name:</strong> ${formData.get('name')}<br>
-              <strong>Event Date:</strong> ${formData.get('event_date')}<br>
+              <strong>Host:</strong> ${formData.get('name')}<br>
+              <strong>Date:</strong> ${displayDate}<br>
               <strong>Location:</strong> ${formData.get('event_city')}<br>
               <strong>Guest Count:</strong> ${formData.get('guest_count')} guests
             `;
@@ -256,8 +270,8 @@ Venue & Logistics:
         console.error('Submission failed:', err);
         if (modalRecap) {
           modalRecap.innerHTML = `
-            <strong>Name:</strong> ${formData.get('name')}<br>
-            <strong>Event Date:</strong> ${formData.get('event_date')}<br>
+            <strong>Host:</strong> ${formData.get('name')}<br>
+            <strong>Date:</strong> ${displayDate}<br>
             <strong>Location:</strong> ${formData.get('event_city')}<br>
             <strong>Guest Count:</strong> ${formData.get('guest_count')} guests
           `;
