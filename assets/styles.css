@@ -1589,9 +1589,85 @@ textarea:focus {
   transform: scale(1.1);
 }
 
+.footer-legal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 .footer-legal p {
   font-size: 0.82rem;
   color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.footer-legal a,
+.footer-legal a.cloudflare-link {
+  color: #f38020 !important; /* Official Cloudflare Brand Orange */
+  text-decoration: none !important;
+  font-weight: 500;
+  display: inline-block;
+  transition:
+    color 0.25s var(--ease-smooth),
+    text-shadow 0.25s var(--ease-smooth),
+    filter 0.25s var(--ease-smooth),
+    transform 0.2s var(--ease-smooth);
+}
+
+.footer-legal a:hover,
+.footer-legal a.cloudflare-link:hover {
+  color: #ffa34d !important;
+  text-decoration: none !important;
+  text-shadow:
+    0 0 8px rgba(243, 128, 32, 0.9),
+    0 0 18px rgba(243, 128, 32, 0.65),
+    0 0 28px rgba(243, 128, 32, 0.4);
+  filter: drop-shadow(0 0 6px rgba(243, 128, 32, 0.75));
+  transform: translateY(-1px);
+}
+
+@media (max-width: 860px) {
+  .footer-legal {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .footer-legal .legal-copy {
+    white-space: nowrap;
+    font-size: clamp(0.63rem, 2.62vw, 0.78rem);
+    letter-spacing: -0.01em;
+  }
+
+  .footer-legal .powered-by {
+    font-size: 0.78rem;
+  }
+}
+
+.legal-sep {
+  margin: 0 8px;
+  color: var(--border-highlight);
+}
+
+.cloudflare-link {
+  color: #f38020; /* Cloudflare Brand Orange */
+  text-decoration: none;
+  font-weight: 500;
+  transition:
+    color 0.25s var(--ease-smooth),
+    text-shadow 0.25s var(--ease-smooth),
+    filter 0.25s var(--ease-smooth);
+}
+
+.cloudflare-link:hover {
+  color: #ffa34d;
+  text-decoration: none;
+  text-shadow:
+    0 0 8px rgba(243, 128, 32, 0.9),
+    0 0 18px rgba(243, 128, 32, 0.6),
+    0 0 28px rgba(243, 128, 32, 0.35);
+  filter: drop-shadow(0 0 5px rgba(243, 128, 32, 0.7));
 }
 
 /* ========================================================
