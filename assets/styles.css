@@ -1336,7 +1336,6 @@ textarea:focus {
   box-shadow: 0 0 12px var(--copper-glow);
 }
 
-/* Dedicated Textarea Sizing: Opens at ~280px without scrollbar */
 .booking-form textarea {
   min-height: 280px;
   line-height: 1.6;
@@ -1355,11 +1354,22 @@ textarea:focus {
   background: var(--bg-deep);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color 0.25s;
+  transition:
+    border-color 0.3s var(--ease-smooth),
+    background-color 0.3s var(--ease-smooth),
+    box-shadow 0.3s var(--ease-smooth);
 }
 
 .faq-item:hover {
-  border-color: rgba(217, 136, 69, 0.3);
+  border-color: rgba(217, 136, 69, 0.35);
+}
+
+.faq-item.open {
+  border-color: rgba(217, 136, 69, 0.5);
+  background: var(--bg-surface);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(217, 136, 69, 0.08);
 }
 
 .faq-question {
@@ -1376,17 +1386,56 @@ textarea:focus {
   font-weight: 500;
   cursor: pointer;
   text-align: left;
+  transition: color 0.25s var(--ease-smooth);
+}
+
+.faq-item.open .faq-question {
+  color: var(--copper-light);
 }
 
 .faq-icon {
   color: var(--copper-base);
   font-size: 1.3rem;
-  transition: transform 0.3s;
+  line-height: 1;
+  display: inline-block;
+  transition:
+    transform 0.38s var(--ease-spring),
+    color 0.25s ease;
+}
+
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  color: var(--copper-light);
 }
 
 .faq-answer {
-  display: none;
-  padding: 0 24px 22px;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.36s var(--ease-smooth);
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.32s var(--ease-smooth),
+    padding-bottom 0.36s var(--ease-smooth);
+}
+
+.faq-item.open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-item.open .faq-answer-inner {
+  opacity: 1;
+  transform: translateY(0);
+  padding-bottom: 22px;
+}
+
+.faq-answer p {
   color: var(--text-muted);
   font-size: 0.92rem;
   line-height: 1.6;
@@ -1394,14 +1443,6 @@ textarea:focus {
 
 .faq-answer p + p {
   margin-top: 12px;
-}
-
-.faq-item.open .faq-answer {
-  display: block;
-}
-
-.faq-item.open .faq-icon {
-  transform: rotate(45deg);
 }
 
 /* Modal */

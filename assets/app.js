@@ -324,7 +324,6 @@ Venue & Logistics:
       const item = document.createElement('div');
       item.className = 'faq-item reveal-item';
 
-      // Converts blank lines in your template literals into separate <p> paragraphs
       const paragraphs = faq.answer
         .trim()
         .split(/\n\s*\n/)
@@ -337,7 +336,9 @@ Venue & Logistics:
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          ${paragraphs}
+          <div class="faq-answer-inner">
+            ${paragraphs}
+          </div>
         </div>
       `;
       fragment.appendChild(item);
