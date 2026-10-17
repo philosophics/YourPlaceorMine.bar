@@ -1392,6 +1392,10 @@ textarea:focus {
   line-height: 1.6;
 }
 
+.faq-answer p + p {
+  margin-top: 12px;
+}
+
 .faq-item.open .faq-answer {
   display: block;
 }

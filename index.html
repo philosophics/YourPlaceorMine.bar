@@ -33,7 +33,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <!-- Contained Ambient Shimmer -->
@@ -549,37 +549,10 @@
         <div class="section-header reveal">
           <span class="eyebrow">Clear Answers</span>
           <h2>Frequently Asked Questions</h2>
+          <p class="section-desc">Everything you need to know about Utah dry-hire regulations, logistics, and planning your event bar.</p>
         </div>
 
-        <div class="faq-list reveal-stagger">
-          <div class="faq-item reveal-item">
-            <button class="faq-question">What does "Dry Hire" mean?<span class="faq-icon">+</span></button>
-            <div class="faq-answer">
-              <p>Under Utah mobile bar regulations and dry-hire practices nationwide, the event host purchases the alcohol directly at retail prices. This avoids heavy markups from standard caterers. We supply everything else: licensing, insurance, homemade syrups, garnishes, mixers, ice, barware, and professional bartenders.</p>
-            </div>
-          </div>
-
-          <div class="faq-item reveal-item">
-            <button class="faq-question">Are your bartenders certified and insured?<span class="faq-icon">+</span></button>
-            <div class="faq-answer">
-              <p>Yes. All bartenders hold active state alcohol server certifications and Utah Food Handler credentials. We carry a comprehensive $2,000,000 General & Liquor Liability policy and can provide certificates of insurance (COI) to your venue upon request.</p>
-            </div>
-          </div>
-
-          <div class="faq-item reveal-item">
-            <button class="faq-question">How do we know how much alcohol to buy?<span class="faq-icon">+</span></button>
-            <div class="faq-answer">
-              <p>Once your signature cocktail menu is selected, we provide an itemized buying guide with exact bottle counts, recommended spirit brands, and calculated beer/wine volumes scaled precisely to your timeline and guest count.</p>
-            </div>
-          </div>
-
-          <div class="faq-item reveal-item">
-            <button class="faq-question">What is your deposit and reservation policy?<span class="faq-icon">+</span></button>
-            <div class="faq-answer">
-              <p>A 50% deposit and signed service contract lock in your date on our calendar. The remaining balance is due 14 days prior to your event. Dates are reserved on a first-come, first-served basis.</p>
-            </div>
-          </div>
-        </div>
+        <div class="faq-list reveal-stagger" id="faqList"></div>
       </div>
     </section>
   </main>
@@ -651,6 +624,7 @@
     </div>
   </footer>
 
-  <script src="app.js" defer></script>
+  <script src="assets/faq.js"></script>
+  <script src="assets/app.js" defer></script>
 </body>
 </html>

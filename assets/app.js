@@ -306,11 +306,43 @@ Venue & Logistics:
     });
   }
 
-  // --- FAQ Accordion ---
-  document.querySelectorAll('.faq-question').forEach(button => {
-    button.addEventListener('click', () => {
-      const parent = button.parentElement;
-      parent.classList.toggle('open');
+  // --- Dynamic FAQ Injection & Accordion Engine ---
+  const faqList = document.getElementById('faqList');
+
+  if (faqList && typeof FAQ_DATA !== 'undefined') {
+    // Event delegation: listens on container so dynamically added buttons always trigger
+    faqList.addEventListener('click', (e) => {
+      const button = e.target.closest('.faq-question');
+      if (!button) return;
+      const parent = button.closest('.faq-item');
+      if (parent) parent.classList.toggle('open');
     });
-  });
+
+    const fragment = document.createDocumentFragment();
+
+    FAQ_DATA.forEach(faq => {
+      const item = document.createElement('div');
+      item.className = 'faq-item reveal-item';
+
+      // Converts blank lines in your template literals into separate <p> paragraphs
+      const paragraphs = faq.answer
+        .trim()
+        .split(/\n\s*\n/)
+        .map(p => `<p>${p.trim()}</p>`)
+        .join('');
+
+      item.innerHTML = `
+        <button class="faq-question">
+          ${faq.question}
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          ${paragraphs}
+        </div>
+      `;
+      fragment.appendChild(item);
+    });
+
+    faqList.appendChild(fragment);
+  };
 });
