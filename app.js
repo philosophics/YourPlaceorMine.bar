@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const durationVal = document.getElementById('durationVal');
   const tierRadios = document.querySelectorAll('input[name="tierSelect"]');
   const addonCheckboxes = document.querySelectorAll('.addons-grid input[type="checkbox"]');
+  const addonIceDisplay = document.getElementById('addonIceDisplay');
 
   const totalEstimate = document.getElementById('totalEstimate');
   const summaryStaff = document.getElementById('summaryStaff');
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PUBLIC_TIERS = {
     classic: { name: 'The Classic Pour', base: 350, perGuest: 4.0 },
+    apothecary: { name: 'The Zero-Proof Lounge', base: 450, perGuest: 4.5 },
     craft: { name: 'The Craft Signature', base: 520, perGuest: 5.5 },
     grand: { name: 'The Grand Lounge', base: 850, perGuest: 7.5 }
   };
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) card.classList.toggle('active', radio.checked);
     });
 
-    const tier = PUBLIC_TIERS[selectedTier];
+    const tier = PUBLIC_TIERS[selectedTier] || PUBLIC_TIERS.craft;
 
     // Staffing calculation: Solo mixologist up to 100 guests
     let staffCount = 1;
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Additional staffing fee when exceeding solo capacity
     const extraStaffFee = Math.max(0, staffCount - 1) * 160;
 
-    // Per-guest consumables (syrups, fresh citrus, aromatics, garnishes, ice)
+    // Per-guest consumables
     const guestFee = guests * tier.perGuest;
 
     // Hourly service duration scaling (4 hours standard)
@@ -117,11 +119,23 @@ document.addEventListener('DOMContentLoaded', () => {
       hoursLabel = `-$${Math.abs(hrFee)} (-${lessH}h reduced duration)`;
     }
 
-    // Add-on Enhancements
+    // Add-on Enhancements (flat vs per-guest calculation)
     let addonSum = 0;
     addonCheckboxes.forEach(cb => {
-      if (cb.checked) addonSum += parseInt(cb.value, 10);
+      if (cb.checked) {
+        if (cb.dataset.perGuest) {
+          addonSum += Math.round(guests * parseFloat(cb.dataset.perGuest));
+        } else {
+          addonSum += parseInt(cb.value, 10);
+        }
+      }
     });
+
+    // Update dynamic label for ice add-on
+    if (addonIceDisplay) {
+      const currentIceCost = Math.round(guests * 1.50);
+      addonIceDisplay.textContent = `+$${currentIceCost} ($1.50/guest)`;
+    }
 
     const baseline = tier.base + guestFee + extraStaffFee + hrFee + addonSum;
 
@@ -173,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
         eventNotes.value = 
 `[Estimator Selections: ${PUBLIC_TIERS[selectedTier].name} | ${hours} Hours | ${guests} Guests | Est: ${rangeText} | Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}]
 
-Occasion, Vibe & Cocktail Inspirations:
-• Tell us about the vibe, favorite spirits, or custom signature drink ideas: 
+Occasion, Vibe & Signature Drink Inspirations:
+• Tell us about the occasion, favorite spirits, zero-proof preferences, or signature drink ideas: 
 
 
 Venue & Logistics:
@@ -191,7 +205,6 @@ Venue & Logistics:
           reserveSection.scrollIntoView({ behavior: 'smooth' });
         }
         if (eventNotes) {
-          // Focus the textarea so the client can immediately start typing
           eventNotes.focus();
         }
         setTimeout(() => {

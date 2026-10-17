@@ -225,14 +225,15 @@
 
     <!-- Packages Section -->
     <section id="services" class="section-padding">
-      <div class="container">
+      <div class="container packages-container">
         <div class="section-header reveal">
           <span class="eyebrow">Service Tiers</span>
           <h2>Curated Bar Experiences</h2>
           <p class="section-desc">Transparent pricing designed for gatherings of all scales. Custom adjustments gladly welcomed.</p>
         </div>
 
-        <div class="grid-3 packages-grid reveal-stagger">
+        <div class="packages-grid reveal-stagger">
+          <!-- Tier 1: The Classic Pour -->
           <div class="tier-card reveal-item">
             <div class="tier-header">
               <span class="tier-badge">Beer & Wine</span>
@@ -245,16 +246,42 @@
             </div>
             <ul class="tier-features">
               <li>Up to 4 hours of dedicated bar service</li>
-              <li>1 Certified Bartender (up to 65 guests)</li>
-              <li>Full bar tool kit, ice tubs & chillers</li>
-              <li>Beer, wine & simple 2-ingredient highballs</li>
-              <li>Disposable cocktail napkins & stirrers</li>
-              <li>Personalized retail shopping blueprint</li>
-              <li>Setup, breakdown & clean-up included</li>
+              <li>1 Certified Lead Bartender (solo up to 100 guests)</li>
+              <li>Beer, wine, cider & 2-ingredient spirit highballs</li>
+              <li>Full bar toolkit, speed rails, wine keys & bar mats</li>
+              <li>Chilling tubs, stainless ice wells & scoops</li>
+              <li>Disposable cocktail napkins & compostable straws</li>
+              <li>Itemized retail bottle quantity buying guide</li>
+              <li>Full load-in setup, breakdown & post-event cleanup</li>
             </ul>
             <a href="#reserve" class="btn btn-outline full-width">Reserve Tier</a>
           </div>
 
+          <!-- Tier 2: The Zero-Proof Lounge -->
+          <div class="tier-card reveal-item">
+            <div class="tier-header">
+              <span class="tier-badge">Zero-Proof & Soda</span>
+              <h3>The Zero-Proof Lounge</h3>
+              <p class="tier-subtitle">Artisanal mocktails & craft soda bar</p>
+              <div class="tier-price">
+                <span class="currency">$</span>650
+                <span class="price-sub">/ 4 hours</span>
+              </div>
+            </div>
+            <ul class="tier-features">
+              <li>Up to 4 hours of dedicated craft service</li>
+              <li>1 Certified Lead Mixologist (solo up to 100 guests)</li>
+              <li><strong>2 House-Crafted Botanical Mocktails</strong></li>
+              <li><strong>The Dirty Soda Lounge:</strong> Canned sodas (Coke, Dr Pepper, Sprite, soda water)</li>
+              <li>4 Artisanal syrups (coconut, peach, blackberry, vanilla)</li>
+              <li>Fresh-squeezed lime wheels & chilled sweet cream</li>
+              <li>Dehydrated garnishes, citrus wheels & fresh herbs</li>
+              <li>Elegant framed signature zero-proof menu display</li>
+            </ul>
+            <a href="#reserve" class="btn btn-outline full-width">Reserve Tier</a>
+          </div>
+
+          <!-- Tier 3: The Craft Signature (Featured) -->
           <div class="tier-card featured-tier reveal-item">
             <div class="featured-ribbon">Most Popular</div>
             <div class="tier-header">
@@ -267,18 +294,19 @@
               </div>
             </div>
             <ul class="tier-features">
-              <li>Up to 4 hours of dedicated service</li>
-              <li><strong>2 Certified Bartenders included</strong></li>
+              <li>Up to 4 hours of dedicated craft cocktail service</li>
+              <li>1 Certified Lead Mixologist (solo capacity up to 100 guests)</li>
               <li><strong>2 Signature Handcrafted Cocktails</strong></li>
-              <li>Small-batch syrups, purees & fresh citrus</li>
-              <li>Dehydrated garnishes, herbs & botanicals</li>
-              <li>Highballs, beer & wine service</li>
-              <li>Full bar setup, coolers & pour stations</li>
-              <li>Itemized retail bottle quantity guide</li>
+              <li>Small-batch artisanal syrups & house-pressed citrus</li>
+              <li>Dehydrated fruit wheels, torched herbs & aromatics</li>
+              <li>Beer, wine & classic spirit highballs</li>
+              <li>Full mobile bar setup, ice wells & pour stations</li>
+              <li>Itemized retail alcohol shopping blueprint</li>
             </ul>
             <a href="#reserve" class="btn btn-copper full-width">Reserve Tier</a>
           </div>
 
+          <!-- Tier 4: The Grand Lounge (VIP Tier) -->
           <div class="tier-card reveal-item">
             <div class="tier-header">
               <span class="tier-badge">The VIP Tier</span>
@@ -291,13 +319,13 @@
             </div>
             <ul class="tier-features">
               <li>Up to 5 hours of dedicated bar service</li>
-              <li>2 Certified Bartenders + Bar Back</li>
+              <li><strong>2 Certified Bartenders + Dedicated Barback</strong></li>
               <li><strong>3 Signature Cocktails + 1 Curated Mocktail</strong></li>
-              <li>Custom framed bar signage & menus</li>
-              <li>Infused spa hydration station included</li>
+              <li><strong>Private Digital Menu Consultation & Recipe Development</strong></li>
+              <li>Infused Spa Hydration Station included</li>
               <li>Champagne / Prosecco toast pour service</li>
-              <li>Priority pre-event cocktail menu tasting</li>
-              <li>Setup, execution & end-of-night packdown</li>
+              <li>Custom framed copper bar signage & printed menus</li>
+              <li>White-glove bar load-in, execution & midnight strike</li>
             </ul>
             <a href="#reserve" class="btn btn-outline full-width">Reserve Tier</a>
           </div>
@@ -354,6 +382,13 @@
                     <span class="rc-desc">Beer, Wine & Highballs</span>
                   </span>
                 </label>
+                <label class="radio-card">
+                  <input type="radio" name="tierSelect" value="apothecary">
+                  <span class="rc-content">
+                    <span class="rc-title">Zero-Proof Lounge</span>
+                    <span class="rc-desc">Mocktails & Dirty Soda</span>
+                  </span>
+                </label>
                 <label class="radio-card active">
                   <input type="radio" name="tierSelect" value="craft" checked>
                   <span class="rc-content">
@@ -377,22 +412,29 @@
                 <label class="addon-chip">
                   <input type="checkbox" id="addonHydration" value="125">
                   <div class="chip-content">
-                    <span class="chip-name">Infused Hydration Station</span>
+                    <span class="chip-name">Infused Spa Hydration Station</span>
                     <span class="chip-price">+$125</span>
                   </div>
                 </label>
                 <label class="addon-chip">
                   <input type="checkbox" id="addonChampagne" value="150">
                   <div class="chip-content">
-                    <span class="chip-name">Champagne Toast Pouring</span>
+                    <span class="chip-name">Champagne Toast Pouring Service</span>
                     <span class="chip-price">+$150</span>
                   </div>
                 </label>
                 <label class="addon-chip">
-                  <input type="checkbox" id="addonClearIce" value="175">
+                  <input type="checkbox" id="addonBistro" value="150">
                   <div class="chip-content">
-                    <span class="chip-name">2" Artisanal Clear Ice Cubes</span>
-                    <span class="chip-price">+$175</span>
+                    <span class="chip-name">High-Top Bistro Cocktail Tables (Set of 4 + Linens)</span>
+                    <span class="chip-price">+$150</span>
+                  </div>
+                </label>
+                <label class="addon-chip">
+                  <input type="checkbox" id="addonIce" data-per-guest="1.50">
+                  <div class="chip-content">
+                    <span class="chip-name">Full-Service Ice & Beverage Chilling Program</span>
+                    <span class="chip-price" id="addonIceDisplay">+$1.50 / guest</span>
                   </div>
                 </label>
               </div>
