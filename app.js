@@ -282,6 +282,25 @@ Venue & Logistics:
     });
   }
 
+  // --- Enhanced Date Picker Invocation ---
+  const eventDateInput = document.getElementById('eventDate');
+  if (eventDateInput) {
+    // Set minimum selectable date to today so past dates cannot be booked
+    const today = new Date().toISOString().split('T')[0];
+    eventDateInput.setAttribute('min', today);
+
+    // Clicking anywhere in the input box opens the native date picker modal
+    eventDateInput.addEventListener('click', () => {
+      if ('showPicker' in HTMLInputElement.prototype) {
+        try {
+          eventDateInput.showPicker();
+        } catch (err) {
+          // Suppress if picker is already open
+        }
+      }
+    });
+  }
+
   // --- FAQ Accordion ---
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
