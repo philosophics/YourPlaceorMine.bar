@@ -536,12 +536,25 @@
     unlockBtn.addEventListener('click', tryUnlock);
     pinInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') tryUnlock(); });
 
-    const TIER_CFG = {
+    const TIER_CFG = {};
+  if (typeof PACKAGES_DATA !== 'undefined') {
+    PACKAGES_DATA.forEach(pkg => {
+      TIER_CFG[pkg.id] = {
+        name: pkg.name,
+        base: pkg.estimatorBase,
+        perGuest: pkg.estimatorPerGuest,
+        desc: pkg.subtitle
+      };
+    });
+  } else {
+    // Fallback if data file is absent
+    Object.assign(TIER_CFG, {
       classic: { name: 'The Classic Pour', base: 350, perGuest: 4.00, desc: 'Beer, Wine & 2-Ingredient Highball Service' },
       apothecary: { name: 'The Zero-Proof Lounge', base: 450, perGuest: 4.50, desc: 'Craft Mocktails & The Dirty Soda Bar' },
       craft: { name: 'The Craft Signature', base: 520, perGuest: 5.50, desc: '2 Signature Cocktails, Craft Syrups, Citrus & Aromatics' },
       grand: { name: 'The Grand Lounge', base: 850, perGuest: 7.50, desc: '3 Cocktails, 1 Mocktail, Hydration & Toast Service' }
-    };
+    });
+  };
 
     const guestSlider = document.getElementById('guestSlider');
     const durationSlider = document.getElementById('durationSlider');
@@ -721,5 +734,6 @@ https://yourplaceormine.bar`;
       calculate();
     });
   </script>
+  <script src="assets/packages.js"></script>
 </body>
 </html>

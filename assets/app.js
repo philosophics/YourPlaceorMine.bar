@@ -49,6 +49,59 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- Dynamic Packages Injection & Estimator Lookup Setup ---
+  const packagesGrid = document.getElementById('packagesGrid');
+  const PUBLIC_TIERS = {};
+
+  if (typeof PACKAGES_DATA !== 'undefined') {
+    const pkgFragment = document.createDocumentFragment();
+
+    PACKAGES_DATA.forEach(pkg => {
+      // Populate estimator lookup table automatically from packages-data.js
+      PUBLIC_TIERS[pkg.id] = {
+        name: pkg.name,
+        base: pkg.estimatorBase,
+        perGuest: pkg.estimatorPerGuest
+      };
+
+      if (packagesGrid) {
+        const card = document.createElement('div');
+        card.className = `tier-card reveal-item${pkg.featured ? ' featured-tier' : ''}`;
+
+        const ribbonHTML = pkg.featured && pkg.featuredRibbon
+          ? `<div class="featured-ribbon">${pkg.featuredRibbon}</div>`
+          : '';
+
+        const badgeClass = pkg.featured ? 'tier-badge copper-badge' : 'tier-badge';
+        const btnClass = pkg.featured ? 'btn btn-copper full-width' : 'btn btn-outline full-width';
+        const featuresHTML = pkg.features.map(f => `<li>${f}</li>`).join('');
+
+        card.innerHTML = `
+          ${ribbonHTML}
+          <div class="tier-header">
+            <span class="${badgeClass}">${pkg.badge}</span>
+            <h3>${pkg.name}</h3>
+            <p class="tier-subtitle">${pkg.subtitle}</p>
+            <div class="tier-price">
+              <span class="currency">$</span>${pkg.displayPrice}
+              <span class="price-sub">${pkg.durationLabel}</span>
+            </div>
+          </div>
+          <ul class="tier-features">
+            ${featuresHTML}
+          </ul>
+          <a href="#reserve" class="${btnClass}">Reserve Tier</a>
+        `;
+
+        pkgFragment.appendChild(card);
+      }
+    });
+
+    if (packagesGrid) {
+      packagesGrid.appendChild(pkgFragment);
+    }
+  }
+
   // --- Pricing Estimator Logic (Bracketed Range & 100-Guest Solo Capacity) ---
   const guestSlider = document.getElementById('guestSlider');
   const durationSlider = document.getElementById('durationSlider');
@@ -65,13 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryAddons = document.getElementById('summaryAddons');
   const applyToFormBtn = document.getElementById('applyToForm');
 
-  const PUBLIC_TIERS = {
-    classic: { name: 'The Classic Pour', base: 350, perGuest: 4.0 },
-    apothecary: { name: 'The Zero-Proof Lounge', base: 450, perGuest: 4.5 },
-    craft: { name: 'The Craft Signature', base: 520, perGuest: 5.5 },
-    grand: { name: 'The Grand Lounge', base: 850, perGuest: 7.5 }
-  };
-
   function updateEstimator() {
     if (!guestSlider || !durationSlider || !totalEstimate) return;
 
@@ -85,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) card.classList.toggle('active', radio.checked);
     });
 
-    const tier = PUBLIC_TIERS[selectedTier] || PUBLIC_TIERS.craft;
+    const tier = PUBLIC_TIERS[selectedTier] || PUBLIC_TIERS.craft || { name: 'The Craft Signature', base: 520, perGuest: 5.5 };
 
     // Staffing calculation: Solo mixologist up to 100 guests
     let staffCount = 1;
@@ -116,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (hours < 4) {
       const lessH = 4 - hours;
       hrFee = -(lessH * (staffCount * 35));
-      hoursLabel = `-$${Math.abs(hrFee)} (-${lessH}h reduced duration)`;
+      hoursLabel = `-$${Math.abs(lessH * (staffCount * 35))} (-${lessH}h reduced duration)`;
     }
 
     // Add-on Enhancements (flat vs per-guest calculation)
@@ -183,16 +229,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      const activeTierName = PUBLIC_TIERS[selectedTier] ? PUBLIC_TIERS[selectedTier].name : 'Craft Signature';
+
       if (eventNotes) {
         eventNotes.value = 
-`[Estimator Selections: ${PUBLIC_TIERS[selectedTier].name} | ${hours} Hours | ${guests} Guests | Est: ${rangeText} | Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}]
+`[Estimator Selections: ${activeTierName} | ${hours} Hours | ${guests} Guests | Est: ${rangeText} | Enhancements: ${selectedAddons.length ? selectedAddons.join(', ') : 'None'}]
 
 Occasion, Vibe & Signature Drink Inspirations:
-• Tell us about the occasion, favorite spirits, zero-proof preferences, or signature drink ideas: 
+- Tell us about the occasion, favorite spirits, zero-proof preferences, or signature drink ideas: 
 
 
 Venue & Logistics:
-• Location / venue name, mountain canyon travel, access stairs, or setup notes: 
+- Location / venue name, mountain canyon travel, access stairs, or setup notes: 
 `;
       }
 
@@ -290,11 +338,9 @@ Venue & Logistics:
   // --- Enhanced Date Picker Invocation ---
   const eventDateInput = document.getElementById('eventDate');
   if (eventDateInput) {
-    // Set minimum selectable date to today so past dates cannot be booked
     const today = new Date().toISOString().split('T')[0];
     eventDateInput.setAttribute('min', today);
 
-    // Clicking anywhere in the input box opens the native date picker modal
     eventDateInput.addEventListener('click', () => {
       if ('showPicker' in HTMLInputElement.prototype) {
         try {
@@ -310,7 +356,6 @@ Venue & Logistics:
   const faqList = document.getElementById('faqList');
 
   if (faqList && typeof FAQ_DATA !== 'undefined') {
-    // Event delegation: listens on container so dynamically added buttons always trigger
     faqList.addEventListener('click', (e) => {
       const button = e.target.closest('.faq-question');
       if (!button) return;
@@ -345,5 +390,5 @@ Venue & Logistics:
     });
 
     faqList.appendChild(fragment);
-  };
+  }
 });
