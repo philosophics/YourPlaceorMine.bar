@@ -220,7 +220,6 @@ Venue & Logistics:
   const modalRecap = document.getElementById('modalRecap');
   const closeModal = document.getElementById('closeModal');
 
-  // Helper to format "YYYY-MM-DD" into "Thursday, April 1, 2027"
   function formatDisplayDate(dateStr) {
     if (!dateStr) return '';
     const [y, m, d] = dateStr.split('-').map(Number);
@@ -268,15 +267,7 @@ Venue & Logistics:
         }
       } catch (err) {
         console.error('Submission failed:', err);
-        if (modalRecap) {
-          modalRecap.innerHTML = `
-            <strong>Host:</strong> ${formData.get('name')}<br>
-            <strong>Date:</strong> ${displayDate}<br>
-            <strong>Location:</strong> ${formData.get('event_city')}<br>
-            <strong>Guest Count:</strong> ${formData.get('guest_count')} guests
-          `;
-        }
-        if (confirmModal) confirmModal.classList.add('active');
+        alert(`There was an issue sending your inquiry: ${err.message || 'Please check your connection or email cheers@yourplaceormine.bar directly.'}`);
       } finally {
         submitBtn.disabled = false;
         submitBtn.querySelector('.btn-text').textContent = originalText;
