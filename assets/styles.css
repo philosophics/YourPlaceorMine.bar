@@ -1558,35 +1558,116 @@ textarea:focus {
 }
 
 .social-icon-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--bg-surface);
   border: 1px solid var(--border-highlight);
   color: var(--text-warm);
-  transition: all 0.25s var(--ease-smooth);
+  overflow: hidden;
   text-decoration: none;
+  isolation: isolate;
+  transition:
+    transform 0.35s var(--ease-spring),
+    border-color 0.3s ease,
+    box-shadow 0.35s ease;
+}
+
+/* Sliding colored fill layer from Example 1 (No mirror reflection) */
+.social-icon-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: translateY(100%);
+  transition: transform 0.42s cubic-bezier(0.46, -0.78, 0.5, 1.56);
+  z-index: 0;
+}
+
+/* Platform-specific brand colors */
+.social-fb::before {
+  background: #1877f2;
+}
+
+.social-ig::before {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+}
+
+.social-google::before {
+  background: #ea4335;
+}
+
+.social-email::before {
+  background: var(--copper-gradient);
+}
+
+.social-github::before {
+  background: linear-gradient(135deg, #6e5494 0%, #24292e 100%);
 }
 
 .social-icon-btn svg {
+  position: relative;
+  z-index: 1;
   width: 17px;
   height: 17px;
-  transition: transform 0.2s;
+  pointer-events: none;
+  transition:
+    transform 0.5s var(--ease-spring),
+    color 0.25s ease;
 }
 
-.social-icon-btn:hover {
-  border-color: var(--copper-base);
-  color: var(--copper-light);
-  background: rgba(217, 136, 69, 0.12);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(217, 136, 69, 0.25);
-}
+/* Desktop Hover Only (Mobile touch view stays clean and unaffected) */
+@media (hover: hover) and (pointer: fine) {
+  .social-icon-btn:hover {
+    transform: translateY(-3px);
+  }
 
-.social-icon-btn:hover svg {
-  transform: scale(1.1);
+  .social-icon-btn:hover::before {
+    transform: translateY(0);
+  }
+
+  /* 360-degree rotation spin from Example 2 */
+  .social-icon-btn:hover svg {
+    transform: rotate(360deg) scale(1.15);
+    color: #ffffff;
+  }
+
+  /* Platform-specific glowing halos on hover */
+  .social-fb:hover {
+    border-color: #1877f2;
+    box-shadow: 0 4px 18px rgba(24, 119, 242, 0.5);
+  }
+
+  .social-ig:hover {
+    border-color: #dc2743;
+    box-shadow: 0 4px 18px rgba(220, 39, 67, 0.5);
+  }
+
+  .social-google:hover {
+    border-color: #ea4335;
+    box-shadow: 0 4px 18px rgba(234, 67, 53, 0.5);
+  }
+
+  .social-email:hover {
+    border-color: var(--copper-base);
+    box-shadow: 0 4px 18px var(--copper-glow);
+  }
+
+  .social-github:hover {
+    border-color: #6e5494;
+    box-shadow: 0 4px 18px rgba(110, 84, 148, 0.5);
+  }
 }
 
 .footer-legal {
